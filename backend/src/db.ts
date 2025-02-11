@@ -1,4 +1,3 @@
-// src/db.ts (Example - Create this file)
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -10,8 +9,8 @@ async function connectToDatabase() {
     return prisma;
   } catch (error) {
     console.error('Database connection error:', error);
-    process.exit(1); // Exit the process if the database connection fails
+    process.exit(1);
   }
 }
 
-export { connectToDatabase, prisma }; // Export both the function and the client instance
+export { connectToDatabase, prisma };

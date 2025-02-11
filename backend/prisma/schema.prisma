@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   binaryTargets = ["native", "linux-musl"]
@@ -25,10 +19,13 @@ model User {
   password    String   // Store hashed passwords!
   role        Role     @default(USER) // Frontend/user-defined Role
   assignedRole Role     @default(USER) // Role assigned by system
+  kycStatus        ApprovalStatus @default(PENDING)
 
   googleId    String?  @unique // For future OAuth
 
   approvals Approval[]
+  approvedApprovals Approval[] @relation("approvedApprovals")
+  rejectedApprovals Approval[] @relation("rejectedApprovals")
 
   @@map("users")
 }
@@ -39,10 +36,12 @@ model Approval {
   userId        String
   user          User     @relation(fields: [userId], references: [id])
   status        ApprovalStatus @default(PENDING)
-  requiredRole  Role
-  approvedBy    String?  @db.Uuid
-  rejectedBy    String?  @db.Uuid
-
+  requiredRole  Role?
+  approval_type ApprovalTypes
+  approvedBy    String? 
+  approvedByUser User? @relation("approvedApprovals", fields: [approvedBy], references: [id])
+  rejectedBy    String? 
+  rejectedByUser User? @relation("rejectedApprovals", fields: [rejectedBy], references: [id])
   @@map("approvals")
 }
 
@@ -60,4 +59,10 @@ enum ApprovalStatus {
   APPROVED
 
   @@map("approval_statuses")
+}
+
+enum ApprovalTypes {
+  KYC
+  ROLE
+  @@map("approval_types")
 }
