@@ -1,103 +1,122 @@
 import {
   Disclosure,
   DisclosureButton,
-  DisclosurePanel,
   Menu,
   MenuButton,
   MenuItem,
   MenuItems,
 } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-
-const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
-const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
-  { name: "Reports", href: "#", current: false },
-];
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-];
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function classNames(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import MainLogo from "../icons/MainLogo";
+import { useKycSystem } from "../context/kycSystemContextProvider";
+import AvatarIcon from "../icons/AvatarIcon";
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { RoutePath, Status } from "../enums";
+import ApprovalTable from "./ApprovalTable";
+import Pagination from "./Pagination";
+import Tabs from "./Tabs";
+import AlternateDashBoardScreen from "./AlternateDashBoardScreen";
 
 export default function Dashboard() {
+  const {
+    loading,
+    loggedUserData,
+    haveEnoughPermissionsToLoadTables,
+    onSignOut,
+    pendingApprovals,
+    pendingCurrentPage,
+    pendingTotalPages,
+    approvedApprovals,
+    approvedCurrentPage,
+    approvedTotalPages,
+    rejectedApprovals,
+    rejectedCurrentPage,
+    rejectedTotalPages,
+  } = useKycSystem();
+  const navigate = useNavigate();
+
+  const tabs = [
+    {
+      label: "Pending",
+      content: (
+        <>
+          <ApprovalTable approvals={pendingApprovals} />
+          <Pagination
+            currentPage={pendingCurrentPage}
+            totalPages={pendingTotalPages}
+          />
+        </>
+      ),
+    },
+    {
+      label: "Approved",
+      content: (
+        <>
+          <ApprovalTable approvals={approvedApprovals} />
+          <Pagination
+            currentPage={approvedCurrentPage}
+            totalPages={approvedTotalPages}
+          />
+        </>
+      ),
+    },
+    {
+      label: "Rejected",
+      content: (
+        <>
+          <ApprovalTable approvals={rejectedApprovals} />
+          <Pagination
+            currentPage={rejectedCurrentPage}
+            totalPages={rejectedTotalPages}
+          />
+        </>
+      ),
+    },
+  ];
+
+  const userNavigation = useMemo(
+    () => [
+      {
+        name: "Your Profile",
+        onClick: () => {
+          navigate(RoutePath.PROFILE);
+        },
+      },
+      {
+        name: "Sign out",
+        onClick: () => {
+          onSignOut();
+        },
+      },
+    ],
+    [onSignOut],
+  );
+  if (!loggedUserData) return <></>;
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
       <div className="min-h-full">
-        <Disclosure as="nav" className="bg-gray-800">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Disclosure as="nav" className="">
+          <div className="mx-auto bg-gray-200 px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
-              <div className="flex items-center">
+              <div className="flex flex-row items-center">
                 <div className="shrink-0">
-                  <img
-                    alt="Your Company"
-                    src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                    className="size-8"
-                  />
+                  <MainLogo />
                 </div>
-                <div className="hidden md:block">
-                  <div className="ml-10 flex items-baseline space-x-4">
-                    {navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        aria-current={item.current ? "page" : undefined}
-                        className={classNames(
-                          item.current
-                            ? "bg-gray-900 text-white"
-                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                          "rounded-md px-3 py-2 text-sm font-medium",
-                        )}
-                      >
-                        {item.name}
-                      </a>
-                    ))}
-                  </div>
+                <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                  <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                    Dashboard
+                  </h1>
                 </div>
               </div>
               <div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
-                  <button
-                    type="button"
-                    className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden"
-                  >
-                    <span className="absolute -inset-1.5" />
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon aria-hidden="true" className="size-6" />
-                  </button>
-
-                  {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div>
-                      <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
+                      <MenuButton className="relative flex max-w-xs items-center rounded-full text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                         <span className="absolute -inset-1.5" />
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          alt=""
-                          src={user.imageUrl}
-                          className="size-8 rounded-full"
-                        />
+                        <AvatarIcon />
                       </MenuButton>
                     </div>
                     <MenuItems
@@ -107,8 +126,8 @@ export default function Dashboard() {
                       {userNavigation.map((item) => (
                         <MenuItem key={item.name}>
                           <a
-                            href={item.href}
                             className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
+                            onClick={item.onClick}
                           >
                             {item.name}
                           </a>
@@ -119,7 +138,6 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="-mr-2 flex md:hidden">
-                {/* Mobile menu button */}
                 <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
@@ -135,78 +153,42 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-
-          <DisclosurePanel className="md:hidden">
-            <div className="space-y-1 px-2 pt-2 pb-3 sm:px-3">
-              {navigation.map((item) => (
-                <DisclosureButton
-                  key={item.name}
-                  as="a"
-                  href={item.href}
-                  aria-current={item.current ? "page" : undefined}
-                  className={classNames(
-                    item.current
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                    "block rounded-md px-3 py-2 text-base font-medium",
-                  )}
-                >
-                  {item.name}
-                </DisclosureButton>
-              ))}
-            </div>
-            <div className="border-t border-gray-700 pt-4 pb-3">
-              <div className="flex items-center px-5">
-                <div className="shrink-0">
-                  <img
-                    alt=""
-                    src={user.imageUrl}
-                    className="size-10 rounded-full"
-                  />
-                </div>
-                <div className="ml-3">
-                  <div className="text-base/5 font-medium text-white">
-                    {user.name}
-                  </div>
-                  <div className="text-sm font-medium text-gray-400">
-                    {user.email}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="relative ml-auto shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden"
-                >
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon aria-hidden="true" className="size-6" />
-                </button>
-              </div>
-              <div className="mt-3 space-y-1 px-2">
-                {userNavigation.map((item) => (
-                  <DisclosureButton
-                    key={item.name}
-                    as="a"
-                    href={item.href}
-                    className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  >
-                    {item.name}
-                  </DisclosureButton>
-                ))}
-              </div>
-            </div>
-          </DisclosurePanel>
         </Disclosure>
-
-        <header className="bg-white shadow-sm">
-          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              Dashboard
-            </h1>
-          </div>
-        </header>
         <main>
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            {/* Your content */}
+            {loading ? (
+              <div className="flex justify-center items-center">
+                <svg
+                  className="animate-spin h-8 w-8 text-indigo-600 mr-3"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                Loading ...
+              </div>
+            ) : haveEnoughPermissionsToLoadTables ? (
+              <div className="container mx-auto mt-8">
+                <Tabs tabs={tabs} />
+              </div>
+            ) : loggedUserData?.kycStatus === Status.PENDING ? (
+              <AlternateDashBoardScreen type={Status.PENDING} />
+            ) : (
+              <AlternateDashBoardScreen type={Status.REJECTED} />
+            )}
           </div>
         </main>
       </div>

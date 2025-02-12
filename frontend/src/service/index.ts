@@ -57,9 +57,7 @@ const apiService = () => {
       let message = "An unexpected error occurred.";
       const err = error as AxiosError;
       if (err.response) {
-        message =
-          (err.response.data as { message: string })?.message ||
-          `Request failed with status ${err.response.status}`;
+        message = (err.response.data as { message: string })?.message;
 
         if (err.response.status === 400) {
           message = "Bad Request. Please check your input."; //Example Custom Error message

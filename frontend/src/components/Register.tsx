@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Role, RoutePath } from "../enums";
+import { Constants, Role, RoutePath } from "../enums";
 import MainLogo from "../icons/MainLogo";
 import apiService from "../service";
 import ButtonWithSpinner from "./ButtonWithSpinner";
+import { useKycSystem } from "../context/kycSystemContextProvider";
+import { useSnackbar } from "../context/snackbarContextProvider";
 
 export default function Registration() {
   const navigate = useNavigate();
   const { postService } = apiService();
+  const { setLoggedUserData } = useKycSystem();
+  const { showSnackbar } = useSnackbar();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onRegister = async (formData: FormData) => {
@@ -17,12 +21,23 @@ export default function Registration() {
     const role = formData.get("role")?.valueOf();
     if (email && password) {
       const requireAdminAccess = !!role;
-      const response = await postService("/register", {
+      const response = await postService("/user/register", {
         email,
         password,
         role: requireAdminAccess ? Role.ADMIN : Role.USER,
       });
-      console.log(response);
+      if (!response?.error) {
+        setLoggedUserData(response.data?.userData);
+        localStorage.setItem(Constants.TOKEN, response.data?.token);
+        navigate(RoutePath.DASHBOARD);
+        showSnackbar("User has successfully registered", "success");
+      } else {
+        const errorMessage =
+          typeof response?.error === "string"
+            ? response.error
+            : "Registration attempt failed";
+        showSnackbar(errorMessage as string, "error");
+      }
     }
     setIsSubmitting(false);
   };
@@ -55,7 +70,7 @@ export default function Registration() {
         </h2>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className="flex gap-4 flex-col mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} method="POST" className="space-y-6">
           <div>
             <label
@@ -145,15 +160,15 @@ export default function Registration() {
               label="Register"
             />
           </div>
-          <div className="flex justify-center">
-            <button
-              onClick={goToLogin}
-              className="flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
-            >
-              Already user ? Login{" "}
-            </button>
-          </div>
         </form>
+        <div className="flex justify-center">
+          <button
+            onClick={goToLogin}
+            className="flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
+          >
+            Already user ? Login{" "}
+          </button>
+        </div>
       </div>
     </div>
   );
