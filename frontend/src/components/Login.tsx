@@ -1,25 +1,39 @@
 import { useNavigate } from "react-router-dom";
 import MainLogo from "../icons/MainLogo";
-import { RoutePath } from "../enums";
+import { Constants, RoutePath } from "../enums";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import apiService from "../service";
 import { useState } from "react";
+import { useKycSystem } from "../context/kycSystemContextProvider";
+import { useSnackbar } from "../context/snackbarContextProvider";
 
 export default function Login() {
   const navigate = useNavigate();
   const { postService } = apiService();
+  const { setLoggedUserData } = useKycSystem();
+  const { showSnackbar } = useSnackbar();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const onLogin = async (formData: FormData) => {
-    // implement login
     setIsSubmitting(true);
     const email = formData.get("email")?.valueOf()?.toString();
     const password = formData.get("password")?.valueOf()?.toString();
     if (email && password) {
-      const response = await postService("/register", {
+      const response = await postService("/user/login", {
         email,
         password,
       });
-      console.log(response);
+      if (!response?.error) {
+        setLoggedUserData(response.data?.userData);
+        localStorage.setItem(Constants.TOKEN, response.data?.token);
+        navigate(RoutePath.DASHBOARD);
+        showSnackbar("User has successfully logged in", "success");
+      } else {
+        const errorMessage =
+          typeof response?.error === "string"
+            ? response.error
+            : "Login attempt failed";
+        showSnackbar(errorMessage as string, "error");
+      }
     }
     setIsSubmitting(false);
   };
@@ -49,7 +63,7 @@ export default function Login() {
         </h2>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className=" flex gap-4 flex-col mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} method="POST" className="space-y-6">
           <div>
             <label
@@ -95,18 +109,18 @@ export default function Login() {
             <ButtonWithSpinner
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
               isLoading={isSubmitting}
-              label="Register"
+              label="Login"
             />
           </div>
-          <div className="flex justify-center">
-            <button
-              onClick={goToRegister}
-              className="flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
-            >
-              Not a user ? Register{" "}
-            </button>
-          </div>
         </form>
+        <div className="flex justify-center">
+          <button
+            onClick={goToRegister}
+            className="flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
+          >
+            Not a user ? Register{" "}
+          </button>
+        </div>
       </div>
     </div>
   );
