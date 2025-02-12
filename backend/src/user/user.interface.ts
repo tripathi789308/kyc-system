@@ -1,11 +1,10 @@
-
 export interface CreateUserDTO {
-    email: string;
-    password: string;
-    role : "SUPER" | "ADMIN" | "USER"
+  email: string;
+  password: string;
+  role: "SUPER" | "ADMIN" | "USER";
 }
 
-import { Role, ApprovalStatus } from '@prisma/client';
+import { Role, ApprovalStatus } from "@prisma/client";
 
 export interface UserData {
   id: string;
