@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2016",  // Or a more recent version
+    "target": "es2016", 
     "module": "commonjs",
-    "outDir": "./dist",   // Output directory for compiled JavaScript
-    "rootDir": "./src",    // Location of your TypeScript source files
-    "strict": true,        // Enable strict type checking
+    "outDir": "./dist", 
+    "rootDir": "./src",   
+    "strict": true,  
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"]  // Include all TypeScript files in the 'src' directory
+  "include": ["src/**/*"]
 }
