@@ -40,6 +40,9 @@ A comprehensive KYC (Know Your Customer) system built to manage user registratio
 -   **Email:** `superadmin@example.com`
 -   **Password:** `superadmin`
 
+## Note
+- All the env credentails will be removed and disbaled after 3 days.
+
 ## Running the Project
 
 1.  **Clone the repository:**
