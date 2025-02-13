@@ -93,7 +93,6 @@ async function approveApproval(approvalId: string, userId: string) {
         where: { id: approvalId },
         data: {
           status: ApprovalStatus.APPROVED,
-          rejectedBy: "",
           approvedBy: userId,
         },
       }),
@@ -152,7 +151,6 @@ async function rejectApproval(approvalId: string, userId: string) {
         where: { id: approvalId },
         data: {
           status: ApprovalStatus.REJECTED,
-          approvedBy: "",
           rejectedBy: userId,
         },
       }),

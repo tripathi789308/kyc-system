@@ -2,15 +2,18 @@ interface ButtonWithSpinnerProps {
   isLoading: boolean;
   label: string;
   className: string;
+  onClick?: () => void;
 }
 const ButtonWithSpinner = ({
   isLoading,
   label,
   className,
+  onClick,
 }: ButtonWithSpinnerProps) => {
   return (
     <button
       type="submit"
+      onClick={onClick}
       disabled={isLoading}
       className={`${className} ${
         isLoading ? "opacity-50 cursor-not-allowed" : ""

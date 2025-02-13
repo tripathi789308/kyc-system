@@ -89,7 +89,20 @@ async function loginUser(
 }
 
 async function getUserById(userId: string) {
-  return prisma.user.findUnique({ where: { id: userId } });
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      assignedRole: true,
+      role: true,
+      kycStatus: true,
+      name: true,
+      age: true,
+      createdAt: true,
+      fileSource: true,
+    },
+  });
 }
 
 async function getUploadUrl(userId: string, fileName: string) {

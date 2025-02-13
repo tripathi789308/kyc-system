@@ -6,6 +6,9 @@ export interface ILoggedUserData {
   id: string;
   kycStatus: Status;
   role: Role;
+  name?: string;
+  fileSource?: string;
+  age?: number;
 }
 
 export interface Approval {

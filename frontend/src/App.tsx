@@ -1,9 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import DashboardPage from "./pages/DashboardPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -13,6 +8,8 @@ import ProfilePage from "./pages/ProfilePage";
 import { KycSystemProvider } from "./context/kycSystemContextProvider";
 import { RoutePath } from "./enums";
 import { SnackbarProvider } from "./context/snackbarContextProvider";
+import Layout from "./pages/Layout";
+import React from "react";
 
 function App() {
   return (
@@ -20,30 +17,13 @@ function App() {
       <SnackbarProvider>
         <KycSystemProvider>
           <Routes>
-            <Route
-              path={RoutePath.DASHBOARD}
-              Component={() => <DashboardPage />}
-            ></Route>
-            <Route
-              path="/"
-              Component={() => <Navigate replace to={RoutePath.DASHBOARD} />}
-            ></Route>
-            <Route
-              path={RoutePath.KYC_FORM}
-              Component={() => <KycFormPage />}
-            ></Route>
-            <Route
-              path={RoutePath.PROFILE}
-              Component={() => <ProfilePage />}
-            ></Route>
-            <Route
-              path={RoutePath.REGISTER}
-              Component={() => <RegisterPage />}
-            ></Route>
-            <Route
-              path={RoutePath.LOGIN}
-              Component={() => <LoginPage />}
-            ></Route>
+            <Route path={RoutePath.REGISTER} Component={RegisterPage} />
+            <Route path={RoutePath.LOGIN} Component={LoginPage} />
+            <Route path="/" Component={Layout}>
+              <Route index Component={DashboardPage} />
+              <Route path={RoutePath.KYC_FORM} Component={KycFormPage} />
+              <Route path={RoutePath.PROFILE} Component={ProfilePage} />
+            </Route>
           </Routes>
         </KycSystemProvider>
       </SnackbarProvider>
@@ -51,4 +31,4 @@ function App() {
   );
 }
 
-export default App;
+export default React.memo(App);

@@ -82,7 +82,7 @@ export const KycSystemProvider: React.FC<KycSystemProviderProps> = ({
   children,
 }) => {
   const navigate = useNavigate();
-  const { getService, postService } = apiService();
+  const { getService, putService } = apiService();
   const [loading, setLoading] = useState(false);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [loggedUserData, setLoggedUserData] = useState<ILoggedUserData>();
@@ -212,7 +212,7 @@ export const KycSystemProvider: React.FC<KycSystemProviderProps> = ({
 
   const onApprove = async (approvalId: string, type: ApprovalType) => {
     const tab = getActiveTabKey(activeTab);
-    const response = await postService(
+    const response = await putService(
       `/approvals/${type === ApprovalType.KYC ? "approveKYC" : "approveRole"}`,
       { approvalId },
     );
@@ -237,7 +237,7 @@ export const KycSystemProvider: React.FC<KycSystemProviderProps> = ({
 
   const onReject = async (approvalId: string, type: ApprovalType) => {
     const tab = getActiveTabKey(activeTab);
-    const response = await postService(
+    const response = await putService(
       `/approvals/${type === ApprovalType.KYC ? "rejectKYC" : "rejectRole"}`,
       { approvalId },
     );

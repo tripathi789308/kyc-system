@@ -3,7 +3,7 @@ export enum Constants {
 }
 
 export enum RoutePath {
-  DASHBOARD = "/dashboard",
+  DASHBOARD = "/",
   KYC_FORM = "/kyc-form",
   REGISTER = "/register",
   LOGIN = "/login",
