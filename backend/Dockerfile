@@ -2,10 +2,10 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package.json ./
-RUN yarn install --frozen-lockfile --production=false
-RUN yarn add -D typescript ts-node
 COPY . .
+RUN npm install
+RUN npm install -g typescript ts-node
+
 # Pass env vars to docker images
 RUN echo ${DATABASE_URL} ${PORT}
 ENV DATABASE_URL=${DATABASE_URL}
@@ -15,10 +15,10 @@ ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 ENV POSTGRES_DB=${POSTGRES_DB}
 RUN rm -rf node_modules/.prisma
 RUN rm -rf prisma/generated
-RUN yarn global add prisma
+RUN npm install -g prisma
 RUN npx prisma generate
-RUN yarn build
+RUN npm run build
 
 EXPOSE 3001
 
-CMD [ "yarn", "start" ]
+CMD [ "npm", "start" ]
