@@ -57,11 +57,34 @@ A comprehensive KYC (Know Your Customer) system built to manage user registratio
       BACKEND_PORT=3001
       FRONTEND_PORT=3000
       ```
+    - go to backend and create one more `.env` file
+    - `cd backend`
+      ```
+        POSTGRES_USER=superuser
+        POSTGRES_PASSWORD=test123
+        POSTGRES_DB=kyc_database
+        DATABASE_PORT=5432
+        BACKEND_PORT=3001
+        FRONTEND_PORT=3000
+        DATABASE_URL= "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${DATABASE_PORT}/${POSTGRES_DB}?schema=public"
+        JWT_SECRET=superuser
+        SUPABASE_URL=https://qdlzodpdcgfxymgzvjfm.supabase.co
+        SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkbHpvZHBkY2dmeHltZ3p2amZtIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczOTI4MDUyMCwiZXhwIjoyMDU0ODU2NTIwfQ.il3JzY247aRO1r6Hl7X0OxOQL9rHCu0aA2U-FWGo5Fg
+        SUPABASE_BUCKET=kyc-file-upload
+      ```
+    - `cd ..`
 
 2.  **Start the services using Docker Compose:**
 
     ```bash
     docker compose -f 'docker-compose.yml' up -d --build 'db'
+    ```
+    Note - you can check and stop current postgresql running if any
+    ```
+    sudo systemctl status postgresql
+    ```
+    ```
+    sudo systemctl stop postgresql
     ```
 
     Open a new terminal and run
@@ -76,16 +99,27 @@ A comprehensive KYC (Know Your Customer) system built to manage user registratio
     docker compose -f 'docker-compose.yml' up -d --build 'backend' 
     ```
 
-3.  **Setup Prisma:**
+4.  **Setup Prisma:**
     ```bash
      cd backend
+    ```
+    ```
      npm install -g prisma
+    ```
+    ```
      npx prisma generate
+    ```
+    ```
      npx prisma migrate dev --name init
+    ```
+    ```
      npm run prisma:seed
+    ```
+    ```
      cd ..
     ```
-4.  **Start Frontend:**
+    
+5.  **Start Frontend:**
 
     ```bash
     cd frontend
@@ -93,7 +127,7 @@ A comprehensive KYC (Know Your Customer) system built to manage user registratio
     yarn dev
     ```
 
-5.  **Access the application:**
+6.  **Access the application:**
     Open your web browser and go to `http://localhost:3000` (or the port that your frontend is running on).
 
 ## Technologies Used
