@@ -71,9 +71,6 @@ A comprehensive KYC (Know Your Customer) system built to manage user registratio
         FRONTEND_PORT=3000
         DATABASE_URL= "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${DATABASE_PORT}/${POSTGRES_DB}?schema=public"
         JWT_SECRET=superuser
-        SUPABASE_URL=https://qdlzodpdcgfxymgzvjfm.supabase.co
-        SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkbHpvZHBkY2dmeHltZ3p2amZtIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczOTI4MDUyMCwiZXhwIjoyMDU0ODU2NTIwfQ.il3JzY247aRO1r6Hl7X0OxOQL9rHCu0aA2U-FWGo5Fg
-        SUPABASE_BUCKET=kyc-file-upload
       ```
     - `cd ..`
 

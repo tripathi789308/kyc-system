@@ -9,8 +9,7 @@ import { useSnackbar } from "../context/snackbarContextProvider";
 import AvatarIcon from "../icons/AvatarIcon";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
 
-const VITE_S3_BUCKET_API_KEY =
-  "https://qdlzodpdcgfxymgzvjfm.supabase.co/storage/v1/object/public/kyc-file-upload";
+const VITE_S3_BUCKET_API_KEY = "";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
